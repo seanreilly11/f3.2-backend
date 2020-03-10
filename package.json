@@ -23,5 +23,10 @@
     "express": "^4.17.1",
     "grunt": "^1.0.4",
     "mongoose": "^5.9.3"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-uglify": "^4.0.1",
+    "grunt-contrib-watch": "^1.1.0"
   }
 }
