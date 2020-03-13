@@ -6,10 +6,10 @@ const  projectSchema = new mongoose.Schema({
   author : String,
   imageUrl : String,
   url : String,
-  user_id :{
-    type : mongoose.Schema.Types.ObjectId,
-    ref : 'User'
-  }
+  // user_id :{
+  //   type : mongoose.Schema.Types.ObjectId,
+  //   ref : 'User'
+  // }
 
 });
 

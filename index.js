@@ -32,6 +32,55 @@ app.use(bodyParser.urlencoded({extended:false}));
 
 app.use(cors());
 
+// beginning of Project
+
+app.get('/', (req, res) => res.send('Hello World!'))
+
+app.get('/allProjects', (req,res)=>{
+  res.json(project);
+});
+
+app.get('/projects/p=:id', (req,res)=>{
+  const idParam = req.params.id;
+  for (let i = 0; i < project.length; i++){
+    if (idParam.toString() === project[i].id.toString()) {
+       res.json(project[i]);
+    }
+  }
+});
+
+//Add projects.
+app.post('/addProject', (req,res)=>{
+  //checking if user is found in the db already
+  Project.findOne({name:req.body.name},(err,projectResult)=>{
+    if (projectResult){
+      res.send('project added already');
+    } else {
+       const dbProject = new Project({
+         _id : new mongoose.Types.ObjectId,
+         name : req.body.name,
+         author : req.body.author,
+         image_url : req.body.imageUrl
+         // user_id : req.body.userId
+       });
+       //save to database and notify the user accordingly
+       dbProject.save().then(result =>{
+         res.send(result);
+       }).catch(err => res.send(err));
+    }
+  })
+});
+
+//get all products
+app.get('/allProductsFromDB', (req,res)=>{
+  Product.find().then(result =>{
+    res.send(result);
+  })
+});         
+
+
+
+
 //register user
 app.post('/register', (req,res)=>{
     User.findOne({email:req.body.email},(err,result) =>{
@@ -47,8 +96,7 @@ app.post('/register', (req,res)=>{
                 email : req.body.email,
                 password : hash
             });
-
-            user.save().then(result =>{
+          user.save().then(result =>{
                 res.send(result);
             }).catch(err => res.send(err));
         }
@@ -87,7 +135,6 @@ app.patch('/updateUser/:id', (req,res)=>{
         }).catch(err=> res.send(err));
     }).catch(err=>res.send("Not found"))
 }); // update user
-
 
 
 
