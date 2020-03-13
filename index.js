@@ -32,7 +32,61 @@ app.use(bodyParser.urlencoded({extended:false}));
 
 app.use(cors());
 
+//register user
+app.post('/register', (req,res)=>{
+    User.findOne({email:req.body.email},(err,result) =>{
+        if(result){
+            res.send("This email is already taken. Please try another one")
+        }
+        else{
+            const hash = bcryptjs.hashSync(req.body.password);
+            const user = new User({
+                _id : new mongoose.Types.ObjectId,
+                firstName : req.body.firstName,
+                lastName : req.body.lastName,
+                email : req.body.email,
+                password : hash
+            });
 
+            user.save().then(result =>{
+                res.send(result);
+            }).catch(err => res.send(err));
+        }
+    });
+}); // register
+
+//login user
+app.post('/login', (req,res)=>{
+    User.findOne({email:req.body.email}, (err, result)=>{
+        if(result){
+            if(bcryptjs.compareSync(req.body.password, result.password)){
+                res.send(result)
+            }
+            else{
+                res.send("Not authorised. Incorrect password")
+            }
+        }
+        else{
+            res.send("User not found")
+        }
+    })
+}); // login
+
+// update user
+app.patch('/updateUser/:id', (req,res)=>{
+    const idParam = req.params.id;
+    User.findById(idParam, (err,result)=>{
+    	// const hash = bcryptjs.hashSync(req.body.password);
+        const updatedUser = {
+            firstName : req.body.firstName,
+            lastName : req.body.lastName,
+            email : req.body.email
+        };
+        User.updateOne({_id:idParam}, updatedUser).then(result=>{
+            res.send(result);
+        }).catch(err=> res.send(err));
+    }).catch(err=>res.send("Not found"))
+}); // update user
 
 
 
