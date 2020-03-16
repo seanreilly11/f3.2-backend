@@ -6,7 +6,7 @@ const  projectSchema = new mongoose.Schema({
   author : String,
   imageUrl : String,
   url : String,
-  user_id :{
+  userId :{
     type : mongoose.Schema.Types.ObjectId,
     ref : 'User'
   }

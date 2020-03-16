@@ -67,9 +67,9 @@ app.post('/addProject', (req,res)=>{
        _id : new mongoose.Types.ObjectId,
        name : req.body.name,
        author : req.body.author,
-       image_url : req.body.imageUrl,
+       imageUrl : req.body.imageUrl,
        url : req.body.url,
-       user_id : req.body.userId
+       userId : req.body.userId
      });
        //save to database and notify the user accordingly
        dbProject.save().then(result =>{
@@ -97,17 +97,23 @@ app.delete('/deleteProject/p=:id', (req,res)=>{
 // update Product
 app.patch('/updateProject/p=:id', (req,res)=>{
   const idParam = req.params.id;
-  Project.findById(idParam, (err,result)=>{
-    const updatedProject = {
-      name : req.body.name,
-      author : req.body.author,
-      image_url : req.body.imageUrl,
-      url : req.body.url
-    };
-    Project.updateOne({_id:idParam}, updatedProject).then(result=>{
-      res.send(result);
-    }).catch(err=> res.send(err));
-  }).catch(err=>res.send("Not found"))
+  Project.findOne({name:req.body.name},(err,projectResult)=>{
+    if (projectResult){
+      res.send('project added already');
+    } else {
+      Project.findById(idParam, (err,result)=>{
+        const updatedProject = {
+          name : req.body.name,
+          author : req.body.author,
+          imageUrl : req.body.imageUrl,
+          url : req.body.url
+        };
+        Project.updateOne({_id:idParam}, updatedProject).then(result=>{
+          res.send(result);
+        }).catch(err=> res.send(err));
+      }).catch(err=>res.send("Not found"))
+    }
+  })
 }) // update project
 
 //show users
